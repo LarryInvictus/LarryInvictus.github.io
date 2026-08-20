@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ConvYH V2 — Settings</title>
+
+  <style>
+    :root {
+      --bg: #050008;
+      --accent: #a855ff;
+      --accent-soft: #6b21ff;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: var(--bg);
+      color: #f9f5ff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 40px;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 25px rgba(168, 85, 255, 0.6);
+      margin-bottom: 40px;
+    }
+
+    .panel {
+      width: 70%;
+      max-width: 700px;
+      background: rgba(20, 0, 40, 0.7);
+      border: 2px solid rgba(168, 85, 255, 0.4);
+      box-shadow: 0 0 25px rgba(168, 85, 255, 0.4);
+      border-radius: 16px;
+      padding: 25px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #d8b4ff;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+    }
+
+    .toggle input {
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(168, 85, 255, 0.5);
+      background: rgba(5, 0, 12, 0.9);
+      color: #f9f5ff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input[type="file"] {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #d8b4ff;
+    }
+
+    .note {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #c9a3ff;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Settings</h1>
+
+  <div class="panel">
+
+    <!-- Animations -->
+    <div class="section">
+      <div class="section-title">Animations</div>
+      <label class="toggle">
+        <input type="checkbox" id="animationsToggle" checked>
+        Enable Background Animations
+      </label>
+      <div class="note">Turning this off will stop animations</div>
+    </div>
+
+    <!-- Theme Selector -->
+    <div class="section">
+      <div class="section-title">Theme</div>
+      <select id="themeSelect">
+        <option value="purple">Purple (Default)</option>
+        <option value="blue">Blue</option>
+        <option value="red">Red</option>
+        <option value="gold">Gold</option>
+        <option value="midnight">Midnight</option>
+      </select>
+      <div class="note">Themes will recolor ConvYH V2</div>
+    </div>
+
+    <!-- Custom Background -->
+    <div class="section">
+      <div class="section-title">Custom Background</div>
+      <input type="file" id="bgUpload" accept="image/*">
+      <div class="note">Upload an image to use as your background</div>
+    </div>
+
+  </div>
+
+</body>
+</html>
