@@ -22,16 +22,22 @@
       font-family: Arial, sans-serif;
       background: var(--bg);
       color: #f9f5ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
-    /* animated squares background */
+    /* background container */
     .bg {
       position: fixed;
       inset: 0;
       z-index: -1;
+      overflow: hidden;
       background: radial-gradient(circle at top left, #1a0b33 0, #050008 45%, #000 100%);
     }
 
+    /* floating squares */
     .square {
       position: absolute;
       width: 80px;
@@ -40,97 +46,48 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       background: linear-gradient(135deg, rgba(168, 85, 255, 0.18), rgba(107, 33, 255, 0.05));
       box-shadow: 0 0 25px rgba(168, 85, 255, 0.35);
-      animation: float 18s linear infinite;
       backdrop-filter: blur(4px);
+      transition: transform 10s linear;
     }
 
-    .square:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
-    .square:nth-child(2) { top: 40%; left: 15%; animation-delay: 3s; }
-    .square:nth-child(3) { top: 70%; left: 8%; animation-delay: 6s; }
-    .square:nth-child(4) { top: 20%; right: 10%; animation-delay: 2s; }
-    .square:nth-child(5) { top: 55%; right: 18%; animation-delay: 5s; }
-    .square:nth-child(6) { top: 80%; right: 6%; animation-delay: 8s; }
-
-    @keyframes float {
-      0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 0.9; }
-      25% { transform: translate(40px,-30px) rotate(8deg) scale(1.05); }
-      50% { transform: translate(-20px,-60px) rotate(-6deg) scale(0.95); opacity: 0.6; }
-      75% { transform: translate(30px,10px) rotate(10deg) scale(1.1); }
-      100% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 0.9; }
-    }
-
-    .overlay {
-      position: relative;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .bar {
-      display: flex;
-      gap: 10px;
-      padding: 12px 16px;
-      background: rgba(10, 0, 20, 0.9);
-      border-bottom: 1px solid rgba(168, 85, 255, 0.35);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-      align-items: center;
-    }
-
+    /* big title */
     .title {
-      font-size: 14px;
-      letter-spacing: 0.12em;
+      font-size: 64px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: rgba(249, 245, 255, 0.7);
-      margin-right: 12px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 60px;
+      text-shadow: 0 0 25px rgba(168, 85, 255, 0.6);
     }
 
-    input {
-      flex: 1;
-      padding: 9px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(168, 85, 255, 0.5);
-      background: rgba(5, 0, 12, 0.9);
-      color: #f9f5ff;
-      outline: none;
-      font-size: 14px;
-      box-shadow: 0 0 0 1px rgba(107, 33, 255, 0.35);
+    /* bottom circle buttons */
+    .menu {
+      display: flex;
+      gap: 60px;
     }
 
-    input::placeholder {
-      color: rgba(209, 196, 255, 0.6);
-    }
-
-    button {
-      padding: 9px 18px;
-      border-radius: 999px;
-      border: none;
-      background: radial-gradient(circle at top left, var(--accent), var(--accent-soft));
-      color: #fdfcff;
-      font-size: 14px;
+    .circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(20, 0, 40, 0.8);
+      border: 2px solid rgba(168, 85, 255, 0.4);
+      box-shadow: 0 0 20px rgba(168, 85, 255, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
       font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
       cursor: pointer;
-      box-shadow: 0 0 18px rgba(168, 85, 255, 0.7);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.08);
-      box-shadow: 0 0 24px rgba(168, 85, 255, 0.9);
-    }
-
-    button:active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: 0 0 12px rgba(168, 85, 255, 0.6);
-    }
-
-    iframe {
-      flex: 1;
-      width: 100%;
-      border: none;
-      background: transparent;
+    .circle:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 30px rgba(168, 85, 255, 0.9);
     }
   </style>
 </head>
@@ -145,16 +102,33 @@
     <div class="square"></div>
   </div>
 
-  <div class="overlay">
-    <div class="bar">
-      <span class="title">ConvYH V2</span>
-      <input id="urlInput" placeholder="Enter URL">
-      <button onclick="go()">Go</button>
-    </div>
+  <div class="title">ConvYH V2</div>
 
-    <iframe id="frame"></iframe>
+  <div class="menu">
+    <div class="circle" onclick="navigate('browser.html')">Browser</div>
+    <div class="circle" onclick="navigate('games.html')">Games</div>
+    <div class="circle" onclick="navigate('settings.html')">Settings</div>
   </div>
 
-  <script src="index.js"></script>
+  <script>
+    // Navigation
+    function navigate(page) {
+      window.location.href = page;
+    }
+
+    // Free‑moving squares
+    const squares = document.querySelectorAll('.square');
+
+    function randomMove(square) {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      square.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    squares.forEach(square => {
+      randomMove(square);
+      setInterval(() => randomMove(square), 8000);
+    });
+  </script>
 </body>
-    </html>
+  </html>
