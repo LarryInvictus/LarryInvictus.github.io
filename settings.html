@@ -17,10 +17,32 @@
       background: var(--bg);
       color: #f9f5ff;
       font-family: Arial, sans-serif;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-top: 40px;
+    }
+
+    /* Background squares */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background: radial-gradient(circle at top left, #1a0b33 0, #050008 45%, #000 100%);
+    }
+
+    .square {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(135deg, rgba(168, 85, 255, 0.18), rgba(107, 33, 255, 0.05));
+      box-shadow: 0 0 25px rgba(168, 85, 255, 0.35);
+      backdrop-filter: blur(4px);
+      transition: transform 10s linear;
     }
 
     h1 {
@@ -94,6 +116,16 @@
 
 <body>
 
+  <!-- Background squares -->
+  <div class="bg">
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+  </div>
+
   <h1>Settings</h1>
 
   <div class="panel">
@@ -105,7 +137,7 @@
         <input type="checkbox" id="animationsToggle" checked>
         Enable Background Animations
       </label>
-      <div class="note">Turning this off will stop animations</div>
+      <div class="note">Turning this off will freeze the floating squares.</div>
     </div>
 
     <!-- Theme Selector -->
@@ -118,17 +150,57 @@
         <option value="gold">Gold</option>
         <option value="midnight">Midnight</option>
       </select>
-      <div class="note">Themes will recolor ConvYH V2</div>
+      <div class="note">Themes recolor ConvYH V2 once applied.</div>
     </div>
 
     <!-- Custom Background -->
     <div class="section">
       <div class="section-title">Custom Background</div>
       <input type="file" id="bgUpload" accept="image/*">
-      <div class="note">Upload an image to use as your background</div>
+      <div class="note">Upload an image to use as your background.</div>
     </div>
 
   </div>
+
+  <script>
+    /* SAVE SETTINGS CLEANLY */
+
+    // Animations
+    document.getElementById("animationsToggle").addEventListener("change", e => {
+      localStorage.setItem("conv_animations", e.target.checked ? "on" : "off");
+    });
+
+    // Theme
+    document.getElementById("themeSelect").addEventListener("change", e => {
+      localStorage.setItem("conv_theme", e.target.value);
+    });
+
+    // Custom background
+    document.getElementById("bgUpload").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem("conv_custom_bg", reader.result);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    /* Background squares movement (settings page only) */
+    const squares = document.querySelectorAll('.square');
+
+    function randomMove(square) {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      square.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    squares.forEach(square => {
+      randomMove(square);
+      setInterval(() => randomMove(square), 8000);
+    });
+  </script>
 
 </body>
 </html>
