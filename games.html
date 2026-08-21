@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ConvYH V2 — Games</title>
+
+  <style>
+    :root {
+      --bg: #050008;
+      --accent: #a855ff;
+      --accent-soft: #6b21ff;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: var(--bg);
+      color: #f9f5ff;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    /* background container */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background: radial-gradient(circle at top left, #1a0b33 0, #050008 45%, #000 100%);
+    }
+
+    /* floating squares */
+    .square {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(135deg, rgba(168, 85, 255, 0.18), rgba(107, 33, 255, 0.05));
+      box-shadow: 0 0 25px rgba(168, 85, 255, 0.35);
+      backdrop-filter: blur(4px);
+      transition: transform 10s linear;
+    }
+
+    /* main frame */
+    .frame {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      height: calc(100vh - 120px);
+      background: rgba(20, 0, 40, 0.7);
+      border: 2px solid rgba(168, 85, 255, 0.4);
+      box-shadow: 0 0 25px rgba(168, 85, 255, 0.4);
+      border-radius: 16px;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    /* search bar */
+    .search {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(168, 85, 255, 0.5);
+      background: rgba(5, 0, 12, 0.9);
+      color: #f9f5ff;
+      font-size: 16px;
+      margin-bottom: 20px;
+      outline: none;
+    }
+
+    /* grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+    }
+
+    .game {
+      background: rgba(30, 0, 60, 0.7);
+      border: 1px solid rgba(168, 85, 255, 0.4);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      color: #e9d5ff;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .game:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 20px rgba(168, 85, 255, 0.8);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background -->
+  <div class="bg">
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+  </div>
+
+  <!-- Main Frame -->
+  <div class="frame">
+    <input class="search" id="search" placeholder="Search games...">
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <script>
+    /* Floating squares */
+    const squares = document.querySelectorAll('.square');
+
+    function randomMove(square) {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      square.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    squares.forEach(square => {
+      randomMove(square);
+      setInterval(() => randomMove(square), 8000);
+    });
+
+    /* Auto-load games from /games folder */
+    const grid = document.getElementById("grid");
+
+    // List of game files (you add files inside /games)
+    const gamesFolder = [
+      "2048.html",
+      "dino.html",
+      "flappy.html",
+      "slope.html",
+      "retro-bowl.html",
+      "cookie.html",
+      "smashkarts.html",
+      "drift.html"
+    ];
+
+    function loadGames() {
+      gamesFolder.forEach(game => {
+        const div = document.createElement("div");
+        div.className = "game";
+        div.textContent = game.replace(".html", "");
+        div.onclick = () => window.location.href = "games/" + game;
+        grid.appendChild(div);
+      });
+    }
+
+    loadGames();
+
+    /* Search filter */
+    document.getElementById("search").addEventListener("input", function () {
+      const value = this.value.toLowerCase();
+      const items = document.querySelectorAll(".game");
+
+      items.forEach(item => {
+        item.style.display = item.textContent.toLowerCase().includes(value)
+          ? "block"
+          : "none";
+      });
+    });
+  </script>
+
+</body>
+  </html>
