@@ -12,62 +12,85 @@
     .wrap{height:calc(100vh - 56px)}
     iframe{width:100%;height:100%;border:0}
     .notice{padding:8px;color:#333;background:#fff;border-bottom:1px solid #eee}
+    .status{padding:8px;font-size:13px;color:#666}
   </style>
 </head>
 <body>
   <header>
-    <div style="font-weight:700">Google Proxy</div>
-    <input id="q" type="text" placeholder="Search Google (via proxy) or enter full URL" />
+    <div style="font-weight:700">Proxy Browser</div>
+    <input id="q" type="text" placeholder="Search Google or enter full URL" />
     <button id="go">Go</button>
     <button id="home">Home</button>
   </header>
-  <div class="notice">This uses a public HTTP proxy to load pages (may not work for all sites). Use responsibly.</div>
+  <div class="notice">This page fetches remote HTML via a public proxy and injects it into the iframe so pages render more completely. Some sites may still block embedding.</div>
+  <div class="status" id="status">Ready</div>
   <div class="wrap">
-    <iframe id="view" sandbox="allow-forms allow-scripts allow-same-origin allow-popups"></iframe>
+    <iframe id="view" sandbox="allow-forms allow-scripts allow-popups allow-same-origin"></iframe>
   </div>
 
 <script>
-// We'll use jina.ai's http proxy endpoint which fetches and returns HTML (https://r.jina.ai/http://example.com)
-// If you type a full URL it will proxy that URL. If you type a search, it will perform a Google search via proxy.
-
 const input = document.getElementById('q');
 const go = document.getElementById('go');
 const home = document.getElementById('home');
 const view = document.getElementById('view');
+const status = document.getElementById('status');
 
 function proxyFor(url){
-  // ensure protocol
-  if(!/^https?:\/\//.test(url)) url = 'http://' + url;
-  // Use jina.ai http proxy
+  // jina.ai proxy expects http://host/path (we'll drop the scheme from the argument)
   return 'https://r.jina.ai/http://' + url.replace(/^https?:\/\//,'');
 }
 
-function doLoad(){
+async function doLoad(){
   const val = input.value.trim();
   if(!val) return;
+  status.textContent = 'Loading...';
+  // determine target URL to use for base
   let target = val;
-  if(!/^https?:\/\//.test(val) && !val.includes(' ')){
-    // treat as host or path
-    if(val.includes('.')) target = val; else target = 'www.'+val+'.com';
-    view.src = proxyFor(target);
-    return;
+  if(!/^https?:\/\//.test(val)) {
+    if(val.includes(' ')){
+      // search
+      const q = encodeURIComponent(val);
+      target = 'http://www.google.com/search?q='+q;
+    } else {
+      // host-like
+      target = 'http://' + (val.includes('.')? val : ('www.'+val+'.com'));
+    }
   }
-  if(val.includes(' ')){
-    // treat as search terms
-    const q = encodeURIComponent(val);
-    view.src = 'https://r.jina.ai/http://www.google.com/search?q='+q;
-    return;
+
+  const proxy = proxyFor(target);
+  try{
+    const res = await fetch(proxy);
+    if(!res.ok) throw new Error('Proxy returned '+res.status);
+    let text = await res.text();
+
+    // inject base tag so relative URLs resolve to the original site
+    const urlObj = new URL(target);
+    const base = `<base href="${urlObj.protocol}//${urlObj.host}">`;
+
+    // remove any <base> tags to avoid conflicts and insert ours after <head>
+    text = text.replace(/<base[^>]*>/i,'');
+    if(/<head[^>]*>/i.test(text)){
+      text = text.replace(/<head([^>]*)>/i, function(m){return m + '\n' + base});
+    } else {
+      text = base + text;
+    }
+
+    // set srcdoc so the iframe renders the HTML we fetched. This avoids X-Frame-Options on the original URL
+    view.srcdoc = text;
+    status.textContent = 'Rendered: ' + urlObj.hostname;
+  }catch(err){
+    console.error(err);
+    status.textContent = 'Failed to load via proxy: ' + err.message + '. Falling back to direct proxy URL in iframe.';
+    // last resort: try setting iframe src directly to the proxy endpoint
+    view.src = proxy;
   }
-  // full URL
-  view.src = proxyFor(val);
 }
 
 go.addEventListener('click',doLoad);
 input.addEventListener('keydown',e=>{ if(e.key==='Enter') doLoad(); });
-home.addEventListener('click',()=>{ input.value='www.google.com'; view.src = proxyFor('www.google.com'); });
+home.addEventListener('click',()=>{ input.value='www.google.com'; doLoad(); });
 
-// load initial
-input.value='www.google.com'; view.src = proxyFor('www.google.com');
+input.value='www.google.com'; doLoad();
 </script>
 </body>
 </html>
