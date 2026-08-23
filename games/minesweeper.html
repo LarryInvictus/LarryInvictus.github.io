@@ -1,22 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Minesweeper</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; }
-        #minesweeper { display: grid; gap: 2px; background-color: #999; padding: 2px; }
-        .cell { width: 30px; height: 30px; background-color: #c0c0c0; border: 1px solid #ccc; text-align: center; line-height: 30px; cursor: pointer; }
-        .cell.revealed { background-color: #e0e0e0; }
-        .cell.mine { background-color: red; }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #controls {
+            margin-bottom: 10px;
+        }
+        #minesweeper {
+            display: grid;
+            grid-template-columns: repeat(10, 30px);
+            grid-template-rows: repeat(10, 30px);
+            gap: 2px;
+        }
+        .cell {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+            background-color: #eee;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .cell.revealed {
+            background-color: #ddd;
+            cursor: default;
+        }
+        .cell.mine {
+            background-color: red;
+        }
+        .cell.flagged {
+            background-color: yellow;
+        }
+        .cell[data-adjacent="1"] {
+            color: blue;
+        }
+        .cell[data-adjacent="2"] {
+            color: green;
+        }
+        .cell[data-adjacent="3"] {
+            color: red;
+        }
+        .cell[data-adjacent="4"] {
+            color: darkblue;
+        }
+        .cell[data-adjacent="5"] {
+            color: darkred;
+        }
+        .cell[data-adjacent="6"] {
+            color: lightblue;
+        }
+        .cell[data-adjacent="7"] {
+            color: black;
+        }
+        .cell[data-adjacent="8"] {
+            color: gray;
+        }
     </style>
 </head>
 <body>
-    <h3>Minesweeper (10x10)</h3>
+    <div id="controls">
+        <button id="sweepMode">Sweep</button>
+        <button id="flagMode">Flag</button>
+    </div>
     <div id="minesweeper"></div>
+
     <script>
-        // Minimal JavaScript implementation for layout and logic
-        const grid = document.getElementById('minesweeper');
-        // (Full code omitted for brevity; users can refer to standard Minesweeper logic)
+        const gridSize = 10;
+        const mineCount = 10;
+        let grid = [];
+        let flagging = false;
+
+        document.getElementById('sweepMode').addEventListener('click', () => {
+            flagging = false;
+        });
+
+        document.getElementById('flagMode').addEventListener('click', () => {
+            flagging = true;
+        });
+
+        function createGrid() {
+            const minesweeper = document.getElementById('minesweeper');
+            minesweeper.innerHTML = '';
+            grid = [];
+
+            // Initialize grid with empty cells
+            for (let row = 0; row < gridSize; row++) {
+                const rowArray = [];
+                for (let col = 0; col < gridSize; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    cell.addEventListener('click', () => handleCellClick(row, col));
+                    minesweeper.appendChild(cell);
+                    rowArray.push({ mine: false, revealed: false, flagged: false, adjacentMines: 0 });
+                }
+                grid.push(rowArray);
+            }
+
+            // Place mines
+            let minesPlaced = 0;
+            while (minesPlaced < mineCount) {
+                const row = Math.floor(Math.random() * gridSize);
+                const col = Math.floor(Math.random() * gridSize);
+                if (!grid[row][col].mine) {
+                    grid[row][col].mine = true;
+                    minesPlaced++;
+                }
+            }
+
+            // Calculate adjacent mines
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (!grid[row][col].mine) {
+                        grid[row][col].adjacentMines = countAdjacentMines(row, col);
+                    }
+                }
+            }
+        }
+
+        function countAdjacentMines(row, col) {
+            let count = 0;
+            for (let r = -1; r <= 1; r++) {
+                for (let c = -1; c <= 1; c++) {
+                    const newRow = row + r;
+                    const newCol = col + c;
+                    if (
+                        newRow >= 0 &&
+                        newRow < gridSize &&
+                        newCol >= 0 &&
+                        newCol < gridSize &&
+                        grid[newRow][newCol].mine
+                    ) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        function revealAllMines() {
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (grid[row][col].mine) {
+                        const cell = document.querySelector(`.cell[data-row='${row}'][data-col='${col}']`);
+                        cell.classList.add('revealed', 'mine');
+                        cell.textContent = '💣';
+                    }
+                }
+            }
+        }
+
+        function handleCellClick(row, col) {
+            const cell = document.querySelector(`.cell[data-row='${row}'][data-col='${col}']`);
+            const gridCell = grid[row][col];
+
+            if (gridCell.revealed) return;
+
+            if (flagging) {
+                toggleFlag(cell, gridCell);
+            } else {
+                revealCell(row, col);
+            }
+        }
+
+        function toggleFlag(cell, gridCell) {
+            if (gridCell.flagged) {
+                gridCell.flagged = false;
+                cell.classList.remove('flagged');
+                cell.textContent = '';
+            } else {
+                gridCell.flagged = true;
+                cell.classList.add('flagged');
+                cell.textContent = '🚩';
+            }
+        }
+
+        function revealCell(row, col) {
+            const cell = document.querySelector(`.cell[data-row='${row}'][data-col='${col}']`);
+            const gridCell = grid[row][col];
+
+            if (gridCell.revealed || gridCell.flagged) return;
+
+            gridCell.revealed = true;
+            cell.classList.add('revealed');
+
+            if (gridCell.mine) {
+                revealAllMines();
+                setTimeout(() => {
+                    alert('Game Over! Restarting...');
+                    createGrid();
+                }, 2000);
+                return;
+            }
+
+            if (gridCell.adjacentMines > 0) {
+                cell.textContent = gridCell.adjacentMines;
+                cell.dataset.adjacent = gridCell.adjacentMines;
+            } else {
+                // Reveal surrounding cells if no adjacent mines
+                for (let r = -1; r <= 1; r++) {
+                    for (let c = -1; c <= 1; c++) {
+                        const newRow = row + r;
+                        const newCol = col + c;
+                        if (
+                            newRow >= 0 &&
+                            newRow < gridSize &&
+                            newCol >= 0 &&
+                            newCol < gridSize
+                        ) {
+                            revealCell(newRow, newCol);
+                        }
+                    }
+                }
+            }
+        }
+
+        createGrid();
     </script>
 </body>
-</html>
+    </html>
