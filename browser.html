@@ -1,75 +1,73 @@
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>ConvYH V2</title>
-        <style>
-            body {
-                font: 14px Verdana, Arial, Helvetica, sans-serif;
-            }
-            .box {
-                width:500px;
-                margin: 10px auto;
-                text-align: center;
-                padding: 20px;
-                border-top: 1px solid #CCCCCC;
-                border-right: 2px solid #CCCCCC;
-                border-bottom: 2px solid #CCCCCC;
-                border-left: 1px solid #CCCCCC;
-            }
-            h6 {
-                font: bold normal 1.2em Verdana, Arial, Helvetica, sans-serif;
-                color: #000000;
-                margin: 5px 5px 20px;
-                padding: 10px;
-                border-top: 1px solid #eee;
-                border-right: 0px solid #ddd;
-                border-bottom: 1px solid #ddd;
-                border-left: 0px solid #ddd;
-            }
-            .footer {
-                font: .9em Verdana, Arial, sans-serif;
-                margin: 8px;
-                padding: 12px 8px 8px;
-                text-align: left;
-            }
-            .credit {
-                font: .8em Verdana, Arial, sans-serif;
-                margin: 8px;
-                padding: 8px;
-                text-align: left;
-            }
-            input.txt {
-                background:#F9f9f9 url(none) repeat scroll 0%;
-                border:1px solid #999999;
-                font-size:0.9em;
-                padding:5px;
-                width:320px;
-            }
-            input.btn {
-                font-size:0.9em;
-                font-family: Arial, sans-serif;
-                width: 80px;
-                margin: 2px 0;
-                padding: 5px;
-            }
-        </style>
-    </head>
-    
-    <body>
-        <div class="box">
-            <h6>My Proxy Server</h1>
-                <center>
-                    <form action="" method="get" accept-charset="utf-8" target="_blank">
-                        <input name="url" type="text" class="txt" id="input" placeholder="type url here.." onfocus="this.value='';" />
-                        <input type="submit" class="btn" value="Go" />
-                    </form>
-                </center>
-                <p class="footer">Instructions: Just type the URL of any web page in the input box above (
-                    <em>e.g. labnol.org</em> ) and hit Enter.</p>
-                <p class="footer">You too can
-                    <a href="http://www.labnol.org/internet/setup-proxy-server/12890/">setup a personal proxy server</a> using Google App Engine. For support, contact
-                    <a href="http://twitter.com/labnol">@labnol</a> from
-                    <a href="http://www.labnol.org/">Digital Inspiration</a>.</p>
-        </div>
-    </body>
-                      </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Browser (Google proxy)</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial; margin:0;padding:0;}
+    header{background:#0f62fe;color:#fff;padding:12px 16px;display:flex;gap:8px;align-items:center}
+    input[type=text]{flex:1;padding:8px;border-radius:6px;border:0}
+    button{padding:8px 12px;border-radius:6px;border:0;cursor:pointer;background:#ffffff22;color:#fff}
+    .wrap{height:calc(100vh - 56px)}
+    iframe{width:100%;height:100%;border:0}
+    .notice{padding:8px;color:#333;background:#fff;border-bottom:1px solid #eee}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="font-weight:700">Google Proxy</div>
+    <input id="q" type="text" placeholder="Search Google (via proxy) or enter full URL" />
+    <button id="go">Go</button>
+    <button id="home">Home</button>
+  </header>
+  <div class="notice">This uses a public HTTP proxy to load pages (may not work for all sites). Use responsibly.</div>
+  <div class="wrap">
+    <iframe id="view" sandbox="allow-forms allow-scripts allow-same-origin allow-popups"></iframe>
+  </div>
+
+<script>
+// We'll use jina.ai's http proxy endpoint which fetches and returns HTML (https://r.jina.ai/http://example.com)
+// If you type a full URL it will proxy that URL. If you type a search, it will perform a Google search via proxy.
+
+const input = document.getElementById('q');
+const go = document.getElementById('go');
+const home = document.getElementById('home');
+const view = document.getElementById('view');
+
+function proxyFor(url){
+  // ensure protocol
+  if(!/^https?:\/\//.test(url)) url = 'http://' + url;
+  // Use jina.ai http proxy
+  return 'https://r.jina.ai/http://' + url.replace(/^https?:\/\//,'');
+}
+
+function doLoad(){
+  const val = input.value.trim();
+  if(!val) return;
+  let target = val;
+  if(!/^https?:\/\//.test(val) && !val.includes(' ')){
+    // treat as host or path
+    if(val.includes('.')) target = val; else target = 'www.'+val+'.com';
+    view.src = proxyFor(target);
+    return;
+  }
+  if(val.includes(' ')){
+    // treat as search terms
+    const q = encodeURIComponent(val);
+    view.src = 'https://r.jina.ai/http://www.google.com/search?q='+q;
+    return;
+  }
+  // full URL
+  view.src = proxyFor(val);
+}
+
+go.addEventListener('click',doLoad);
+input.addEventListener('keydown',e=>{ if(e.key==='Enter') doLoad(); });
+home.addEventListener('click',()=>{ input.value='www.google.com'; view.src = proxyFor('www.google.com'); });
+
+// load initial
+input.value='www.google.com'; view.src = proxyFor('www.google.com');
+</script>
+</body>
+</html>
