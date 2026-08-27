@@ -292,6 +292,96 @@ document.querySelector(".home-buttonaa").onclick = () => {
 
 findProxy();
 </script>
+<script>
+// ===============================
+// ConvYH CORS‑Compatible Proxy Chain
+// ===============================
 
+// Browser elements
+const addressBar = document.getElementById("url-baraa");
+const frame = document.getElementById("browser-frame");
+
+// Public CORS-friendly proxies
+const proxyChain = [
+  // CORS-enabled public proxies
+  "https://api.allorigins.win/raw?url=",
+  "https://corsproxy.io/?",
+  "https://thingproxy.freeboard.io/fetch/",
+  "https://yacdn.org/proxy/",
+  
+  // UV fallback (requires UV deployed)
+  "/uv/service/"
+];
+
+let workingProxy = null;
+
+// Try proxies until one works
+async function findProxy() {
+  for (const proxy of proxyChain) {
+    try {
+      const testURL = proxy + "https://example.com";
+      const res = await fetch(testURL);
+
+      if (res.ok) {
+        workingProxy = proxy;
+        console.log("ConvYH Proxy Selected:", workingProxy);
+        return;
+      }
+    } catch (e) {
+      // Try next proxy
+    }
+  }
+
+  // Final fallback: direct load
+  workingProxy = "";
+  console.log("ConvYH Fallback: Direct load");
+}
+
+// Normalize URL or search
+function normalize(input) {
+  input = input.trim();
+  if (!input) return null;
+
+  if (!input.includes(".") && !input.startsWith("http"))
+    return `https://www.google.com/search?q=${encodeURIComponent(input)}`;
+
+  if (!input.startsWith("http"))
+    return "https://" + input;
+
+  return input;
+}
+
+// Load through proxy
+function loadURL(input) {
+  const normalized = normalize(input);
+  if (!normalized) return;
+
+  const proxied = workingProxy + normalized;
+  frame.src = proxied;
+}
+
+// Enter key loads URL
+addressBar.addEventListener("keydown", e => {
+  if (e.key === "Enter") loadURL(addressBar.value);
+});
+
+// Buttons
+document.querySelector(".reload-buttonaa").onclick = () => {
+  try { frame.contentWindow.location.reload(); } catch {}
+};
+document.querySelector(".backward-buttonaa").onclick = () => {
+  try { frame.contentWindow.history.back(); } catch {}
+};
+document.querySelector(".forward-buttonaa").onclick = () => {
+  try { frame.contentWindow.history.forward(); } catch {}
+};
+document.querySelector(".home-buttonaa").onclick = () => {
+  addressBar.value = "https://www.google.com/";
+  loadURL("https://www.google.com/");
+};
+
+// Start proxy detection
+findProxy();
+</script>
 </body>
 </html>
