@@ -1,311 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ConvYH Browser</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ConvYH Browser</title>
 
-  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-  <style>
-    :root {
-      --bg: #050008;
-      --accent: #a855ff;
-      --accent-soft: #6b21ff;
-      --glass: rgba(20, 0, 40, 0.55);
-    }
+<style>
+:root {
+  --bg: #050008;
+  --accent: #a855ff;
+  --accent-soft: #6b21ff;
+  --glass: rgba(20, 0, 40, 0.55);
+}
 
-    body {
-      margin: 0;
-      background: var(--bg);
-      font-family: Arial, sans-serif;
-      color: #f9f5ff;
-      overflow: hidden;
-    }
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: Arial, sans-serif;
+  color: #f9f5ff;
+  overflow: hidden;
+}
 
-    /* Background squares */
-    .bg {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      overflow: hidden;
-    }
+/* Background squares */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+.square {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg,
+    rgba(168,85,255,0.18),
+    rgba(107,33,255,0.05));
+  box-shadow: 0 0 25px rgba(168,85,255,0.35);
+  backdrop-filter: blur(4px);
+  transition: transform 10s linear;
+}
 
-    .square {
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: linear-gradient(135deg,
-        rgba(168,85,255,0.18),
-        rgba(107,33,255,0.05));
-      box-shadow: 0 0 25px rgba(168,85,255,0.35);
-      backdrop-filter: blur(4px);
-      transition: transform 10s linear;
-    }
+/* Tab bar */
+.uptop-baraa {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background: var(--glass);
+  border-bottom: 1px solid rgba(168,85,255,0.4);
+  box-shadow: 0 0 18px rgba(168,85,255,0.3);
+}
+.tabaa {
+  padding: 8px 16px;
+  margin-right: 6px;
+  border-radius: 10px;
+  background: rgba(10,0,25,0.55);
+  border: 1px solid rgba(168,85,255,0.4);
+  box-shadow: 0 0 12px rgba(168,85,255,0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tabaa.activeaa {
+  background: rgba(30,0,60,0.65);
+  border-color: rgba(168,85,255,0.8);
+  box-shadow: 0 0 22px rgba(168,85,255,0.5);
+}
+.add-tabaa {
+  margin-left: auto;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(10,0,25,0.55);
+  border: 1px solid rgba(168,85,255,0.4);
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(168,85,255,0.25);
+}
 
-    /* Tab bar */
-    .uptop-baraa {
-      display: flex;
-      align-items: center;
-      padding: 8px;
-      background: var(--glass);
-      border-bottom: 1px solid rgba(168,85,255,0.4);
-      box-shadow: 0 0 18px rgba(168,85,255,0.3);
-    }
+/* Browser bar */
+.browser-baraa {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--glass);
+  border-bottom: 1px solid rgba(168,85,255,0.4);
+  box-shadow: 0 0 18px rgba(168,85,255,0.3);
+}
+.browser-baraa button,
+.add-tabaa,
+.tabaa,
+.address-baraa {
+  background: rgba(15,0,30,0.55);
+  border: 1px solid rgba(168,85,255,0.45);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 18px rgba(168,85,255,0.35);
+  color: #e9d2ff;
+}
+.browser-baraa button {
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.browser-baraa button:hover,
+.add-tabaa:hover,
+.tabaa:hover {
+  border-color: rgba(168,85,255,0.9);
+  box-shadow: 0 0 28px rgba(168,85,255,0.7);
+  color: #f7e9ff;
+}
 
-    .tabaa {
-      padding: 8px 16px;
-      margin-right: 6px;
-      border-radius: 10px;
-      background: rgba(10,0,25,0.55);
-      border: 1px solid rgba(168,85,255,0.4);
-      box-shadow: 0 0 12px rgba(168,85,255,0.25);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+/* Address bar */
+.address-baraa {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  padding: 6px 12px;
+}
+#url-baraa {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #f9f5ff;
+  font-size: 16px;
+  outline: none;
+}
 
-    .tabaa.activeaa {
-      background: rgba(30,0,60,0.65);
-      border-color: rgba(168,85,255,0.8);
-      box-shadow: 0 0 22px rgba(168,85,255,0.5);
-    }
-
-    .add-tabaa {
-      margin-left: auto;
-      padding: 8px;
-      border-radius: 10px;
-      background: rgba(10,0,25,0.55);
-      border: 1px solid rgba(168,85,255,0.4);
-      cursor: pointer;
-      box-shadow: 0 0 12px rgba(168,85,255,0.25);
-    }
-
-    /* Browser bar */
-    .browser-baraa {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      background: var(--glass);
-      border-bottom: 1px solid rgba(168,85,255,0.4);
-      box-shadow: 0 0 18px rgba(168,85,255,0.3);
-    }
-
-    .browser-baraa button,
-    .add-tabaa,
-    .tabaa,
-    .address-baraa {
-      background: rgba(15,0,30,0.55);
-      border: 1px solid rgba(168,85,255,0.45);
-      backdrop-filter: blur(6px);
-      box-shadow: 0 0 18px rgba(168,85,255,0.35);
-      color: #e9d2ff;
-    }
-
-    .browser-baraa button {
-      padding: 8px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .browser-baraa button:hover,
-    .add-tabaa:hover,
-    .tabaa:hover {
-      border-color: rgba(168,85,255,0.9);
-      box-shadow: 0 0 28px rgba(168,85,255,0.7);
-      color: #f7e9ff;
-    }
-
-    /* Address bar */
-    .address-baraa {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      border-radius: 12px;
-      padding: 6px 12px;
-    }
-
-    #url-baraa {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: #f9f5ff;
-      font-size: 16px;
-      outline: none;
-    }
-
-    /* Browser frame */
-    .browser-frame {
-      position: absolute;
-      top: 140px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 95%;
-      bottom: 10px;
-
-      border-radius: 18px;
-      border: 2px solid rgba(168,85,255,0.55);
-      background: rgba(10,0,25,0.55);
-      box-shadow: 0 0 40px rgba(168,85,255,0.6);
-
-      overflow: hidden;
-    }
-
-    #browser-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background: transparent;
-    }
-  </style>
+/* Browser frame */
+.browser-frame {
+  position: absolute;
+  top: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  bottom: 10px;
+  border-radius: 18px;
+  border: 2px solid rgba(168,85,255,0.55);
+  background: rgba(10,0,25,0.55);
+  box-shadow: 0 0 40px rgba(168,85,255,0.6);
+  overflow: hidden;
+}
+#browser-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+}
+</style>
 </head>
 
 <body>
 
-  <!-- Background squares -->
-  <div class="bg">
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
+<!-- Background squares -->
+<div class="bg">
+  <div class="square"></div>
+  <div class="square"></div>
+  <div class="square"></div>
+  <div class="square"></div>
+  <div class="square"></div>
+  <div class="square"></div>
+</div>
+
+<!-- Tabs -->
+<div class="uptop-baraa">
+  <div class="tabaa activeaa">
+    <span class="tab-nameaa">New Tab</span>
+    <i class="fas fa-times close-btnaa"></i>
+  </div>
+  <div class="add-tabaa" id="add-tabaa">
+    <i class="fa-solid fa-circle-plus"></i>
+  </div>
+</div>
+
+<!-- Browser bar -->
+<div class="browser-baraa">
+  <button class="backward-buttonaa"><i class="fas fa-arrow-left"></i></button>
+  <button class="forward-buttonaa"><i class="fas fa-arrow-right"></i></button>
+  <button class="reload-buttonaa"><i class="fas fa-redo"></i></button>
+  <button class="home-buttonaa"><i class="fas fa-home"></i></button>
+
+  <div class="address-baraa">
+    <i class="fas fa-lock"></i>
+    <input type="text" id="url-baraa" placeholder="Enter a URL or search">
   </div>
 
-  <!-- Tabs -->
-  <div class="uptop-baraa">
-    <div class="tabaa activeaa">
-      <span class="tab-nameaa">New Tab</span>
-      <i class="fas fa-times close-btnaa"></i>
-    </div>
-    <div class="add-tabaa" id="add-tabaa">
-      <i class="fa-solid fa-circle-plus"></i>
-    </div>
-  </div>
+  <button class="fullscreen-button"><i class="fas fa-expand"></i></button>
+  <button class="settings-buttonaa"><i class="fas fa-cog"></i></button>
+  <button class="menu-buttonaa">⋮</button>
+</div>
 
-  <!-- Browser bar -->
-  <div class="browser-baraa">
-    <button class="backward-buttonaa"><i class="fas fa-arrow-left"></i></button>
-    <button class="forward-buttonaa"><i class="fas fa-arrow-right"></i></button>
-    <button class="reload-buttonaa"><i class="fas fa-redo"></i></button>
-    <button class="home-buttonaa"><i class="fas fa-home"></i></button>
+<!-- Browser frame -->
+<div class="browser-frame">
+  <iframe id="browser-frame"></iframe>
+</div>
 
-    <div class="address-baraa">
-      <i class="fas fa-lock"></i>
-      <input type="text" id="url-baraa" placeholder="Enter a URL or search">
-    </div>
+<script>
+// Floating squares
+const squares = document.querySelectorAll(".square");
+function randomMove(square) {
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight;
+  square.style.transform = `translate(${x}px, ${y}px)`;
+}
+squares.forEach(sq => {
+  randomMove(sq);
+  setInterval(() => randomMove(sq), 8000);
+});
 
-    <button class="fullscreen-button"><i class="fas fa-expand"></i></button>
-    <button class="settings-buttonaa"><i class="fas fa-cog"></i></button>
-    <button class="menu-buttonaa">⋮</button>
-  </div>
+// ===============================
+// ConvYH Proxy Chain (WORKS)
+// ===============================
 
-  <!-- Browser frame -->
-  <div class="browser-frame">
-    <iframe id="browser-frame"></iframe>
-  </div>
+const addressBar = document.getElementById("url-baraa");
+const frame = document.getElementById("browser-frame");
 
-  <script>
-    // Floating squares
-    const squares = document.querySelectorAll(".square");
-    function randomMove(square) {
-      const x = Math.random() * window.innerWidth;
-      const y = Math.random() * window.innerHeight;
-      square.style.transform = `translate(${x}px, ${y}px)`;
-    }
-    squares.forEach(sq => {
-      randomMove(sq);
-      setInterval(() => randomMove(sq), 8000);
-    });
+// Public UV proxy configs
+const proxyChain = [
+  "https://raw.githubusercontent.com/titaniumnetwork-dev/Ultraviolet-Static/main/uv.config.json",
+  "https://raw.githubusercontent.com/titaniumnetwork-dev/Ultraviolet-App/main/uv.config.json",
+  "https://raw.githubusercontent.com/holy-unblocker/website/main/uv.config.json",
+  "https://raw.githubusercontent.com/QuiteAFancyEmerald/Holy-Unblocker/main/uv.config.json"
+];
 
-    // ===============================
-    // ConvYH Auto‑Proxy Engine
-    // ===============================
+// Final fallback
+let workingProxy = "/uv/service/";
 
-    const addressBar = document.getElementById("url-baraa");
-    const frame = document.getElementById("browser-frame");
+async function findProxy() {
+  for (const url of proxyChain) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
 
-    const proxySources = [
-      "https://raw.githubusercontent.com/titaniumnetwork-dev/Ultraviolet-Static/main/uv.config.json",
-      "https://raw.githubusercontent.com/titaniumnetwork-dev/Ultraviolet-App/main/uv.config.json",
-      "https://raw.githubusercontent.com/holy-unblocker/website/main/uv.config.json",
-      "https://raw.githubusercontent.com/QuiteAFancyEmerald/Holy-Unblocker/main/uv.config.json"
-    ];
-
-    let workingProxy = null;
-
-    async function findWorkingProxy() {
-      for (const src of proxySources) {
-        try {
-          const res = await fetch(src);
-          if (res.ok) {
-            const json = await res.json();
-            if (json.prefix) {
-              workingProxy = json.prefix;
-              console.log("ConvYH Proxy Selected:", workingProxy);
-              return;
-            }
-          }
-        } catch {}
+      const json = await res.json();
+      if (json.prefix) {
+        workingProxy = json.prefix;
+        console.log("ConvYH Proxy Selected:", workingProxy);
+        return;
       }
+    } catch {}
+  }
 
-      workingProxy = "/uv/service/";
-      console.log("ConvYH Fallback Proxy Selected:", workingProxy);
-    }
+  console.log("ConvYH Fallback Proxy:", workingProxy);
+}
 
-    function normalizeInput(input) {
-      const trimmed = input.trim();
-      if (!trimmed) return null;
+function normalize(input) {
+  input = input.trim();
+  if (!input) return null;
 
-      if (!trimmed.includes(".") && !trimmed.startsWith("http")) {
-        return `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
-      }
+  if (!input.includes(".") && !input.startsWith("http"))
+    return `https://www.google.com/search?q=${encodeURIComponent(input)}`;
 
-      if (!trimmed.startsWith("http")) {
-        return "https://" + trimmed;
-      }
+  if (!input.startsWith("http"))
+    return "https://" + input;
 
-      return trimmed;
-    }
+  return input;
+}
 
-    function loadURL(input) {
-      const normalized = normalizeInput(input);
-      if (!normalized) return;
+function loadURL(input) {
+  const normalized = normalize(input);
+  if (!normalized) return;
 
-      const proxied = workingProxy + normalized;
-      frame.src = proxied;
-    }
+  frame.src = workingProxy + normalized;
+}
 
-    addressBar.addEventListener("keydown", e => {
-      if (e.key === "Enter") loadURL(addressBar.value);
-    });
+addressBar.addEventListener("keydown", e => {
+  if (e.key === "Enter") loadURL(addressBar.value);
+});
 
-    document.querySelector(".reload-buttonaa").onclick = () => {
-      try { frame.contentWindow.location.reload(); } catch {}
-    };
+document.querySelector(".reload-buttonaa").onclick = () => {
+  try { frame.contentWindow.location.reload(); } catch {}
+};
 
-    document.querySelector(".backward-buttonaa").onclick = () => {
-      try { frame.contentWindow.history.back(); } catch {}
-    };
+document.querySelector(".backward-buttonaa").onclick = () => {
+  try { frame.contentWindow.history.back(); } catch {}
+};
 
-    document.querySelector(".forward-buttonaa").onclick = () => {
-      try { frame.contentWindow.history.forward(); } catch {}
-    };
+document.querySelector(".forward-buttonaa").onclick = () => {
+  try { frame.contentWindow.history.forward(); } catch {}
+};
 
-    document.querySelector(".home-buttonaa").onclick = () => {
-      addressBar.value = "https://www.google.com/";
-      loadURL("https://www.google.com/");
-    };
+document.querySelector(".home-buttonaa").onclick = () => {
+  addressBar.value = "https://www.google.com/";
+  loadURL("https://www.google.com/");
+};
 
-    findWorkingProxy();
-  </script>
+findProxy();
+</script>
 
 </body>
 </html>
