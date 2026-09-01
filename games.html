@@ -29,17 +29,31 @@
       background: radial-gradient(circle at top left, #1a0b33 0, #050008 45%, #000 100%);
     }
 
-    /* floating squares */
-    .square {
+    /* space particles */
+    .particle {
       position: absolute;
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: linear-gradient(135deg, rgba(168, 85, 255, 0.18), rgba(107, 33, 255, 0.05));
-      box-shadow: 0 0 25px rgba(168, 85, 255, 0.35);
-      backdrop-filter: blur(4px);
-      transition: transform 10s linear;
+      width: 3px;
+      height: 3px;
+      background: rgba(255, 255, 255, 1);
+      border-radius: 50%;
+      opacity: 0.9;
+      filter: blur(1.5px);
+      animation: float linear, twinkle ease-in-out infinite;
+    }
+
+    @keyframes float {
+      from {
+        transform: translateY(0) translateX(0);
+      }
+      to {
+        transform: translateY(40vh) translateX(20px);
+      }
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
     }
 
     /* main frame */
@@ -101,14 +115,7 @@
 <body>
 
   <!-- Background -->
-  <div class="bg">
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-  </div>
+  <div class="bg" id="bg"></div>
 
   <!-- Main Frame -->
   <div class="frame">
@@ -118,24 +125,35 @@
   </div>
 
   <script>
-    /* Floating squares */
-    const squares = document.querySelectorAll('.square');
+    /* Space particles */
+    const bg = document.getElementById("bg");
+    const particleCount = 10; // low amount
 
-    function randomMove(square) {
-      const x = Math.random() * window.innerWidth;
-      const y = Math.random() * window.innerHeight;
-      square.style.transform = `translate(${x}px, ${y}px)`;
+    function createParticle() {
+      const p = document.createElement("div");
+      p.classList.add("particle");
+
+      const startX = Math.random() * window.innerWidth;
+      const startY = Math.random() * window.innerHeight;
+
+      const duration = 12 + Math.random() * 10; // slow drift
+
+      p.style.left = `${startX}px`;
+      p.style.top = `${startY}px`;
+      p.style.animationDuration = `${duration}s`;
+
+      bg.appendChild(p);
+
+      setTimeout(() => p.remove(), duration * 1000);
     }
 
-    squares.forEach(square => {
-      randomMove(square);
-      setInterval(() => randomMove(square), 8000);
-    });
+    setInterval(() => {
+      createParticle();
+    }, 900);
 
-    /* Auto-load games from /games folder */
+    /* Auto-load games */
     const grid = document.getElementById("grid");
 
-    // List of game files (you add files inside /games)
     const gamesFolder = [
       "2048.html",
       "dino.html",
@@ -178,4 +196,6 @@
   </script>
 
 </body>
-  </html>
+</html>
+
+  
