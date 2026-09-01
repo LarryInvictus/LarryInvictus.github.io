@@ -6,8 +6,8 @@
 
   <style>
     :root {
-      --accent: #a855ff;
-      --accent-bright: #c47bff;
+      --accent: #b300ff;        /* bright neon purple */
+      --accent-bright: #d24dff; /* glow */
       --bg-dark: #000000;
       --bg-purple: #2b004d;
     }
@@ -60,8 +60,8 @@
       width: 85%;
       height: calc(100vh - 120px);
       background: rgba(20, 0, 40, 0.7);
-      border: 2px solid rgba(168, 85, 255, 0.4);
-      box-shadow: 0 0 25px rgba(168, 85, 255, 0.4);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 35px var(--accent-bright);
       border-radius: 16px;
       padding: 20px;
       overflow-y: auto;
@@ -83,6 +83,7 @@
       color: #fff;
       font-size: 16px;
       outline: none;
+      box-shadow: 0 0 25px var(--accent-bright);
     }
 
     .dropdown {
@@ -95,6 +96,7 @@
       font-size: 16px;
       outline: none;
       cursor: pointer;
+      box-shadow: 0 0 25px var(--accent-bright);
     }
 
     /* Game grid */
@@ -106,20 +108,21 @@
 
     .game {
       background: rgba(30, 0, 60, 0.7);
-      border: 1px solid rgba(168, 85, 255, 0.4);
+      border: 2px solid var(--accent);
       border-radius: 12px;
       padding: 10px;
       text-align: center;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      color: #e9d5ff;
+      color: #fff;
       font-size: 16px;
       font-weight: 600;
+      box-shadow: 0 0 25px var(--accent-bright);
     }
 
     .game:hover {
       transform: translateY(-6px);
-      box-shadow: 0 0 20px rgba(168, 85, 255, 0.8);
+      box-shadow: 0 0 35px var(--accent-bright);
     }
 
     .game img {
