@@ -6,9 +6,9 @@
 
   <style>
     :root {
-      --frame: #8a00ff;
-      --border: #b300ff;
-      --glow: #c94dff;
+      --frame: #7a00e6;     /* slightly darker purple */
+      --border: #9d2bff;    /* soft bright outline */
+      --shadow: rgba(0,0,0,0.25); /* soft shadow */
       --bg-dark: #000000;
       --bg-purple: #2b004d;
     }
@@ -59,8 +59,8 @@
       width: 85%;
       height: calc(100vh - 120px);
       background: var(--frame);
-      border: 2px solid var(--border);
-      box-shadow: 0 0 26px var(--glow);
+      border: 1.5px solid var(--border);
+      box-shadow: 0 0 12px var(--shadow);
       border-radius: 16px;
       padding: 20px;
       overflow-y: auto;
@@ -76,25 +76,25 @@
       flex: 1;
       padding: 14px;
       border-radius: 12px;
-      border: 2px solid var(--border);
+      border: 1.5px solid var(--border);
       background: var(--frame);
       color: white;
       font-size: 16px;
       outline: none;
-      box-shadow: 0 0 22px var(--glow);
+      box-shadow: 0 0 10px var(--shadow);
     }
 
     .dropdown {
       width: 160px;
       padding: 14px;
       border-radius: 12px;
-      border: 2px solid var(--border);
+      border: 1.5px solid var(--border);
       background: var(--frame);
       color: white;
       font-size: 16px;
       outline: none;
       cursor: pointer;
-      box-shadow: 0 0 22px var(--glow);
+      box-shadow: 0 0 10px var(--shadow);
     }
 
     .grid {
@@ -105,21 +105,20 @@
 
     .game {
       background: var(--frame);
-      border: 2px solid var(--border);
-      box-shadow: 0 0 22px var(--glow);
+      border: 1.5px solid var(--border);
+      box-shadow: 0 0 10px var(--shadow);
       border-radius: 12px;
       padding: 10px;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.2s ease;
       color: white;
       font-size: 16px;
       font-weight: 700;
     }
 
     .game:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 0 28px var(--glow);
+      transform: translateY(-4px);
     }
 
     .game img {
@@ -128,7 +127,7 @@
       object-fit: cover;
       border-radius: 10px;
       margin-bottom: 10px;
-      border: 2px solid white;
+      border: 1px solid white;
     }
   </style>
 </head>
@@ -214,7 +213,10 @@
         const iconPath = `games/icons/${name}.png`;
         const div = document.createElement("div");
         div.className = "game";
-        div.innerHTML = `<img src="${iconPath}" onerror="this.src='games/icons/default.png'">`;
+        div.innerHTML = `
+          <img src="${iconPath}" onerror="this.src='games/icons/default.png'">
+          ${name}
+        `;
         div.onclick = () => {
           popularity[name] = (popularity[name] || 0) + 1;
           savePopularity();
