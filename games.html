@@ -6,8 +6,9 @@
 
   <style>
     :root {
-      --accent: #b300ff;        /* UniUB neon purple */
-      --accent-bright: #d24dff; /* glow */
+      --frame: #8a00ff;
+      --border: #b300ff;
+      --glow: #c94dff;
       --bg-dark: #000000;
       --bg-purple: #2b004d;
     }
@@ -24,7 +25,6 @@
       align-items: center;
     }
 
-    /* Space particles */
     .bg {
       position: fixed;
       inset: 0;
@@ -54,22 +54,18 @@
       100% { opacity: 0.7; }
     }
 
-    /* MAIN UNIUB-STYLE PURPLE FRAME */
     .hub {
       margin-top: 60px;
       width: 85%;
       height: calc(100vh - 120px);
-
-      background: var(--accent); /* FULL BRIGHT PURPLE */
-      border: 3px solid var(--accent-bright);
-      box-shadow: 0 0 45px var(--accent-bright);
-
+      background: var(--frame);
+      border: 2px solid var(--border);
+      box-shadow: 0 0 26px var(--glow);
       border-radius: 16px;
       padding: 20px;
       overflow-y: auto;
     }
 
-    /* Search bar */
     .search-row {
       display: flex;
       gap: 20px;
@@ -80,28 +76,27 @@
       flex: 1;
       padding: 14px;
       border-radius: 12px;
-      border: 3px solid var(--accent-bright);
-      background: #ffffff;
-      color: #000;
+      border: 2px solid var(--border);
+      background: var(--frame);
+      color: white;
       font-size: 16px;
       outline: none;
-      box-shadow: 0 0 35px var(--accent-bright);
+      box-shadow: 0 0 22px var(--glow);
     }
 
     .dropdown {
       width: 160px;
       padding: 14px;
       border-radius: 12px;
-      border: 3px solid var(--accent-bright);
-      background: #ffffff;
-      color: #000;
+      border: 2px solid var(--border);
+      background: var(--frame);
+      color: white;
       font-size: 16px;
       outline: none;
       cursor: pointer;
-      box-shadow: 0 0 35px var(--accent-bright);
+      box-shadow: 0 0 22px var(--glow);
     }
 
-    /* Game grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -109,22 +104,22 @@
     }
 
     .game {
-      background: var(--accent); /* FULL BRIGHT PURPLE */
-      border: 3px solid var(--accent-bright);
+      background: var(--frame);
+      border: 2px solid var(--border);
+      box-shadow: 0 0 22px var(--glow);
       border-radius: 12px;
       padding: 10px;
       text-align: center;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      color: #fff;
+      color: white;
       font-size: 16px;
       font-weight: 700;
-      box-shadow: 0 0 35px var(--accent-bright);
     }
 
     .game:hover {
       transform: translateY(-6px);
-      box-shadow: 0 0 55px var(--accent-bright);
+      box-shadow: 0 0 28px var(--glow);
     }
 
     .game img {
@@ -133,7 +128,7 @@
       object-fit: cover;
       border-radius: 10px;
       margin-bottom: 10px;
-      border: 2px solid #fff;
+      border: 2px solid white;
     }
   </style>
 </head>
@@ -158,29 +153,23 @@
   </div>
 
   <script>
-    /* Space particles */
     const bg = document.getElementById("bg");
 
     function createParticle() {
       const p = document.createElement("div");
       p.classList.add("particle");
-
       const startX = Math.random() * window.innerWidth;
       const startY = Math.random() * window.innerHeight;
       const duration = 12 + Math.random() * 10;
-
       p.style.left = `${startX}px`;
       p.style.top = `${startY}px`;
       p.style.animationDuration = `${duration}s`;
-
       bg.appendChild(p);
-
       setTimeout(() => p.remove(), duration * 1000);
     }
 
     setInterval(() => createParticle(), 900);
 
-    /* Game loading */
     const grid = document.getElementById("grid");
 
     const gamesFolder = [
@@ -220,36 +209,26 @@
 
     function loadGames() {
       grid.innerHTML = "";
-
       gamesFolder.forEach(game => {
         const name = game.replace(".html", "");
         const iconPath = `games/icons/${name}.png`;
-
         const div = document.createElement("div");
         div.className = "game";
-
-        div.innerHTML = `
-          <img src="${iconPath}" onerror="this.src='games/icons/default.png'">
-          ${name}
-        `;
-
+        div.innerHTML = `<img src="${iconPath}" onerror="this.src='games/icons/default.png'">`;
         div.onclick = () => {
           popularity[name] = (popularity[name] || 0) + 1;
           savePopularity();
           window.location.href = "games/" + game;
         };
-
         grid.appendChild(div);
       });
     }
 
     loadPopularity().then(loadGames);
 
-    /* Search filter */
     document.getElementById("search").addEventListener("input", function () {
       const value = this.value.toLowerCase();
       const items = document.querySelectorAll(".game");
-
       items.forEach(item => {
         item.style.display = item.textContent.toLowerCase().includes(value)
           ? "block"
@@ -257,10 +236,8 @@
       });
     });
 
-    /* Sorting */
     document.getElementById("sort").addEventListener("change", function () {
       const type = this.value;
-
       if (type === "popularity") {
         gamesFolder.sort((a, b) => {
           const A = popularity[a.replace(".html", "")] || 0;
@@ -268,15 +245,8 @@
           return B - A;
         });
       }
-
-      if (type === "az") {
-        gamesFolder.sort();
-      }
-
-      if (type === "za") {
-        gamesFolder.sort().reverse();
-      }
-
+      if (type === "az") gamesFolder.sort();
+      if (type === "za") gamesFolder.sort().reverse();
       loadGames();
     });
   </script>
