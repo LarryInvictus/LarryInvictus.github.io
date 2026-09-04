@@ -22,7 +22,6 @@
       align-items: center;
     }
 
-    /* Space particles */
     .bg {
       position: fixed;
       inset: 0;
@@ -52,7 +51,6 @@
       100% { opacity: 0.7; }
     }
 
-    /* Header */
     .title {
       margin-top: 40px;
       font-size: 64px;
@@ -71,7 +69,6 @@
       color: var(--accent);
     }
 
-    /* White quote text (no box, no blur) */
     .quote-text {
       margin-top: 10px;
       font-size: 18px;
@@ -85,7 +82,21 @@
       transform: scale(1.05);
     }
 
-    /* Buttons row (UniUB style) */
+    /* NEW SUBTEXT */
+    .sub-text {
+      margin-top: 6px;
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      text-align: center;
+      opacity: 0.9;
+      transition: transform 0.15s ease;
+    }
+
+    .sub-text:hover {
+      transform: scale(1.05);
+    }
+
     .menu {
       margin-top: 40px;
       display: flex;
@@ -135,6 +146,9 @@
 
   <div class="quote-text" id="quoteText">Loading quote...</div>
 
+  <!-- NEW SUBTEXT -->
+  <div class="sub-text">Join the Discord!</div>
+
   <div class="menu">
     <div class="btn" onclick="navigate('browser.html')">
       <img src="icons/browser.png">
@@ -153,12 +167,10 @@
   </div>
 
   <script>
-    /* Navigation */
     function navigate(page) {
       window.location.href = page;
     }
 
-    /* Space particles */
     const bg = document.getElementById("bg");
 
     function createParticle() {
@@ -180,15 +192,12 @@
 
     setInterval(() => createParticle(), 900);
 
-    /* Quote system */
     let quotes = [];
 
     async function loadQuotes() {
       try {
         const response = await fetch("quotes.json");
         quotes = await response.json();
-
-        // Auto-pick random quote on load
         showRandomQuote();
       } catch (err) {
         quoteText.textContent = "Could not load quotes.";
@@ -197,7 +206,6 @@
 
     function showRandomQuote() {
       if (quotes.length === 0) return;
-
       const randomIndex = Math.floor(Math.random() * quotes.length);
       quoteText.textContent = quotes[randomIndex];
     }
