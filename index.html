@@ -1,221 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>ConvYH V2</title>
+<svg width="300" height="100" viewBox="0 0 300 100" fill="none">
 
-  <style>
-    :root {
-      --accent: #a855ff;
-      --accent-bright: #c47bff;
-    }
+  <!-- Browser Icon -->
+  <g transform="translate(0,0)">
+    <rect width="100" height="100" rx="12" fill="black"/>
+    <circle cx="50" cy="50" r="30" stroke="white" stroke-width="4"/>
+    <path d="M20 50h60M50 20c10 8 16 20 16 30s-6 22-16 30c-10-8-16-20-16-30s6-22 16-30z"
+          stroke="white" stroke-width="4" stroke-linecap="round"/>
+  </g>
 
-    body {
-      margin: 0;
-      height: 100vh;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #000000 0%, #12001f 40%, #2b004d 100%);
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  <!-- Games Icon -->
+  <g transform="translate(100,0)">
+    <rect width="100" height="100" rx="12" fill="black"/>
+    <path d="M30 60h10m-5-5v10m35-5h.01M65 45h.01M40 30h30l15 20-15 20H40L25 50l15-20z"
+          stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
 
-    .bg {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      overflow: hidden;
-    }
+  <!-- Settings Icon -->
+  <g transform="translate(200,0)">
+    <rect width="100" height="100" rx="12" fill="black"/>
+    <circle cx="50" cy="50" r="18" stroke="white" stroke-width="4"/>
+    <path d="M85 50l-8 2a22 22 0 0 1-2 5l5 7-6 6-7-5a22 22 0 0 1-5 2l-2 8-8-2a22 22 0 0 1-5-2l-7 5-6-6 5-7a22 22 0 0 1-2-5l-8-2 2-8a22 22 0 0 1 2-5l-5-7 6-6 7 5a22 22 0 0 1 5-2l2-8 8 2a22 22 0 0 1 5 2l7-5 6 6-5 7c1 2 2 4 2 5l8 2z"
+          stroke="white" stroke-width="3" stroke-linejoin="round"/>
+  </g>
 
-    .particle {
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      background: rgba(255, 255, 255, 1);
-      border-radius: 50%;
-      opacity: 0.9;
-      filter: blur(1.5px);
-      animation: float linear, twinkle ease-in-out infinite;
-    }
-
-    @keyframes float {
-      from { transform: translateY(0) translateX(0); }
-      to { transform: translateY(40vh) translateX(20px); }
-    }
-
-    @keyframes twinkle {
-      0% { opacity: 0.7; }
-      50% { opacity: 1; }
-      100% { opacity: 0.7; }
-    }
-
-    .title {
-      margin-top: 40px;
-      font-size: 64px;
-      font-weight: 900;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      text-align: center;
-      filter: drop-shadow(0 0 25px var(--accent));
-    }
-
-    .title span:first-child {
-      color: white;
-    }
-
-    .title span:last-child {
-      color: var(--accent);
-    }
-
-    .quote-text {
-      margin-top: 10px;
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      color: white;
-      transition: transform 0.15s ease;
-    }
-
-    .quote-text:hover {
-      transform: scale(1.05);
-    }
-
-    .sub-text,
-    .sub-text-link {
-      margin-top: 6px;
-      font-size: 18px;
-      font-weight: 600;
-      color: white;
-      text-align: center;
-      opacity: 0.9;
-      transition: transform 0.15s ease;
-    }
-
-    .sub-text:hover,
-    .sub-text-link:hover {
-      transform: scale(1.05);
-    }
-
-    .menu {
-      margin-top: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      width: 350px;
-    }
-
-    .btn {
-      width: 100%;
-      height: 70px;
-      border-radius: 14px;
-      background: var(--accent);
-      border: none;
-      box-shadow: 0 0 25px var(--accent-bright);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      font-size: 20px;
-      font-weight: 700;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 35px var(--accent-bright);
-    }
-
-    .btn img {
-      width: 32px;
-      height: 32px;
-      filter: brightness(1.3);
-    }
-  </style>
-</head>
-
-<body>
-
-  <div class="bg" id="bg"></div>
-
-  <div class="title">
-    <span>ConvYH</span> <span>V2</span>
-  </div>
-
-  <div class="quote-text" id="quoteText">Loading quote...</div>
-
-  <div class="sub-text">Join the Discord!</div>
-  <div class="sub-text-link">https://discord.gg/MCw42zAR7</div>
-
-  <div class="menu">
-    <div class="btn" onclick="navigate('browser.html')">
-      <img src="icons/browser.png">
-      Browser
-    </div>
-
-    <div class="btn" onclick="navigate('games.html')">
-      <img src="icons/games.png">
-      Games
-    </div>
-
-    <div class="btn" onclick="navigate('settings.html')">
-      <img src="icons/settings.png">
-      Settings
-    </div>
-  </div>
-
-  <script>
-    function navigate(page) {
-      window.location.href = page;
-    }
-
-    const bg = document.getElementById("bg");
-
-    function createParticle() {
-      const p = document.createElement("div");
-      p.classList.add("particle");
-
-      const startX = Math.random() * window.innerWidth;
-      const startY = Math.random() * window.innerHeight;
-      const duration = 12 + Math.random() * 10;
-
-      p.style.left = `${startX}px`;
-      p.style.top = `${startY}px`;
-      p.style.animationDuration = `${duration}s`;
-
-      bg.appendChild(p);
-
-      setTimeout(() => p.remove(), duration * 1000);
-    }
-
-    setInterval(() => createParticle(), 900);
-
-    let quotes = [];
-
-    async function loadQuotes() {
-      try {
-        const response = await fetch("quotes.json");
-        quotes = await response.json();
-        showRandomQuote();
-      } catch (err) {
-        quoteText.textContent = "Could not load quotes.";
-      }
-    }
-
-    function showRandomQuote() {
-      if (quotes.length === 0) return;
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      quoteText.textContent = quotes[randomIndex];
-    }
-
-    const quoteText = document.getElementById("quoteText");
-    quoteText.addEventListener("click", showRandomQuote);
-
-    loadQuotes();
-  </script>
-
-</body>
-        </html>
+</svg>
